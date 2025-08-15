@@ -1,0 +1,6 @@
+{
+    "type": "function",
+    "name": "get_root_object_node",
+    "description": "Retrieve the OPC UA server's root 'Objects' node. \n Returns: \n - str: A formatted string containing the NodeId of the root 'Objects' node.",
+    "parameters": {}
+}
