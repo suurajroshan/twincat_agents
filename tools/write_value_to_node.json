@@ -1,0 +1,24 @@
+{
+    "type": "function",
+    "name": "write_value_to_node",
+    "description": "Write a value to a specified OPC UA node. This function connects to the given node on the OPC UA server using the provided client, determines the appropriate VariantType for the given Python value, and writes it to the node.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "NodeId": {
+                "type": "string",
+                "description": "The NodeId of the target node in the OPC UA server address space."
+            },
+            "value": {
+                "anyOf": [
+                { "type": "boolean" },
+                { "type": "number" }
+                ],
+                "description": "The value to write to the node. Currently supports Boolean and Float types."
+            }
+        },
+        "required": ["NodeId", "value"],
+        "additionalProperties": false
+    },
+    "strict": true
+}

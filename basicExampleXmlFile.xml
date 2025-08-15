@@ -1,0 +1,1004 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Beckhoff Automation GmbH" productName="TwinCAT PLC Control" productVersion="3.5.13.21" creationDateTime="2025-06-23T09:46:51.3138385" />
+  <contentHeader name="Plc1" modificationDateTime="2025-06-23T09:46:51.3178282">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous />
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/application" handleUnknown="implementation">
+      <resource name="Plc1">
+        <task name="PlcTask" interval="PT0S" priority="20">
+          <pouInstance name="MAIN" typeName="">
+            <documentation>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+            </documentation>
+          </pouInstance>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Cyclic" Interval="10000" IntervalUnit="us">
+                <Watchdog Enabled="false" TimeUnit="ms" />
+              </TaskSettings>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>525dc629-7830-4319-bef6-2423b8c4ed74</ObjectId>
+            </data>
+          </addData>
+        </task>
+        <globalVars name="GVL">
+          <variable name="BasePath">
+            <type>
+              <derived name="T_MaxString" />
+            </type>
+            <initialValue>
+              <simpleValue value="'C:\Users\suura\Desktop\'" />
+            </initialValue>
+          </variable>
+          <variable name="defaultSpeed">
+            <type>
+              <REAL />
+            </type>
+            <initialValue>
+              <simpleValue value="500" />
+            </initialValue>
+          </variable>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/buildproperties" handleUnknown="implementation">
+              <BuildProperties>
+                <LinkAlways>true</LinkAlways>
+              </BuildProperties>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">{attribute 'qualified_only'}
+VAR_GLOBAL
+	BasePath : T_MaxString := 'C:\Users\suura\Desktop\';
+	defaultSpeed : REAL := 500;
+END_VAR</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+              <ObjectId>e9d1d484-4b44-4b75-b152-c262db173cb9</ObjectId>
+            </data>
+          </addData>
+        </globalVars>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_CompleteSystemState">
+              <baseType>
+                <struct>
+                  <variable name="Motor">
+                    <type>
+                      <derived name="ST_Motor" />
+                    </type>
+                  </variable>
+                  <variable name="Lights">
+                    <type>
+                      <derived name="ST_LightSystem" />
+                    </type>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_CompleteSystemState :
+STRUCT
+	Motor : ST_Motor;
+	Lights : ST_LightSystem;
+END_STRUCT
+END_TYPE
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>8aacdab3-afed-48a0-a7bb-88b3dc21ecfc</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_Light">
+              <baseType>
+                <struct>
+                  <variable name="STATE">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="COLOR">
+                    <type>
+                      <string length="10" />
+                    </type>
+                  </variable>
+                  <variable name="LAST_TRIGGERED">
+                    <type>
+                      <string length="30" />
+                    </type>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_Light :
+STRUCT
+	STATE : BOOL;
+	COLOR : STRING(10);
+	LAST_TRIGGERED : STRING(30);
+END_STRUCT
+END_TYPE
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>03f00174-c7a3-4177-ba22-0ca78f05c613</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_LightSystem">
+              <baseType>
+                <struct>
+                  <variable name="LIGHT1">
+                    <type>
+                      <derived name="ST_Light" />
+                    </type>
+                  </variable>
+                  <variable name="LIGHT2">
+                    <type>
+                      <derived name="ST_Light" />
+                    </type>
+                  </variable>
+                  <variable name="LIGHT3">
+                    <type>
+                      <derived name="ST_Light" />
+                    </type>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_LightSystem :
+STRUCT
+	LIGHT1 : ST_Light;
+	LIGHT2 : ST_Light;
+	LIGHT3 : ST_Light;
+END_STRUCT
+END_TYPE
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>ca50e7f5-6ede-4c3f-bdbc-039309a6121c</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_LightSystemWithHistory">
+              <baseType>
+                <struct>
+                  <variable name="LightSystem">
+                    <type>
+                      <derived name="ST_LightSystem" />
+                    </type>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_LightSystemWithHistory :
+STRUCT
+	LightSystem : ST_LightSystem;
+END_STRUCT
+END_TYPE
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>7976655c-3823-41f0-869c-54f133cd90e9</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_Motor">
+              <baseType>
+                <struct>
+                  <variable name="STATE">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="SPEED">
+                    <type>
+                      <REAL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="GVL.defaultSpeed" />
+                    </initialValue>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_Motor :
+STRUCT
+	STATE : BOOL;
+	SPEED : REAL := GVL.defaultSpeed;
+END_STRUCT
+END_TYPE
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>06ddf205-147f-41e9-a701-16bcf0928d9a</ObjectId>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="CheckIfUpdatedLight" pouType="function">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="RealTimeState">
+                    <type>
+                      <derived name="ST_LightSystem" />
+                    </type>
+                  </variable>
+                  <variable name="ReadState">
+                    <type>
+                      <derived name="ST_LightSystem" />
+                    </type>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF (RealTimeState.LIGHT1.STATE &lt;&gt; ReadState.LIGHT1.STATE) OR
+	(RealTimeState.LIGHT2.STATE &lt;&gt; ReadState.LIGHT2.STATE) OR
+	(RealTimeState.LIGHT3.STATE &lt;&gt; ReadState.LIGHT3.STATE) THEN
+	CheckIfUpdatedLight := TRUE;
+ELSE
+	CheckIfUpdatedLight := FALSE;
+END_IF</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION CheckIfUpdatedLight : BOOL
+VAR_INPUT
+	RealTimeState : ST_LightSystem;
+	ReadState : ST_LightSystem;
+END_VAR
+VAR
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>fcf6c1d1-82cf-4921-bdb7-3e779c74c774</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="GetTimeAsString" pouType="function">
+              <interface>
+                <returnType>
+                  <string />
+                </returnType>
+                <localVars>
+                  <variable name="fbSystemTime">
+                    <type>
+                      <derived name="GETSYSTEMTIME" />
+                    </type>
+                  </variable>
+                  <variable name="timeAsFileTime">
+                    <type>
+                      <derived name="T_FILETIME" />
+                    </type>
+                  </variable>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">fbSystemTime(
+    timeLoDW=&gt;timeAsFileTime.dwLowDateTime,
+    timeHiDW=&gt;timeAsFileTime.dwHighDateTime );
+GetTimeAsString := DT_TO_STRING(FILETIME_TO_DT(timeAsFileTime));</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION GetTimeAsString : STRING
+VAR_INPUT
+END_VAR
+VAR
+	fbSystemTime : GETSYSTEMTIME;
+    timeAsFileTime : T_FILETIME;
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>c1be1ebc-3654-47c2-bbb9-731d52d95568</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="MotorProps" pouType="functionBlock">
+              <interface>
+                <inputVars>
+                  <variable name="Motor">
+                    <type>
+                      <derived name="REFERENCE TO ST_Motor" />
+                    </type>
+                  </variable>
+                  <variable name="MotorSpeed">
+                    <type>
+                      <REAL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="500" />
+                    </initialValue>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF Motor.STATE THEN
+	Motor.SPEED := MotorSpeed;
+ELSE
+	Motor.SPEED := 0;
+END_IF</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK MotorProps
+VAR_INPUT
+	Motor : REFERENCE TO ST_Motor;
+	MotorSpeed : REAL := 500;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>a0cb5ae4-77ff-4a2d-8536-75f8ff7fee69</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="CheckIfUpdatedMotor" pouType="function">
+              <interface>
+                <returnType>
+                  <BOOL />
+                </returnType>
+                <inputVars>
+                  <variable name="RealTimeState">
+                    <type>
+                      <derived name="ST_Motor" />
+                    </type>
+                  </variable>
+                  <variable name="ReadState">
+                    <type>
+                      <derived name="ST_Motor" />
+                    </type>
+                  </variable>
+                </inputVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">IF (RealTimeState.SPEED &lt;&gt; ReadState.SPEED) OR
+	(RealTimeState.STATE &lt;&gt; ReadState.STATE) THEN
+	CheckIfUpdatedMotor := TRUE;
+ELSE
+	CheckIfUpdatedMotor := FALSE;
+END_IF</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION CheckIfUpdatedMotor : BOOL
+VAR_INPUT
+	RealTimeState : ST_Motor;
+	ReadState : ST_Motor;
+END_VAR
+VAR
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>d04add17-43d9-4f60-8481-a0d4e714746e</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="MAIN" pouType="program">
+              <interface>
+                <localVars>
+                  <variable name="GreenLight">
+                    <type>
+                      <derived name="ST_Light" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="COLOR">
+                          <simpleValue value="'GREEN'" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> relating to light system</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="BlueLight">
+                    <type>
+                      <derived name="ST_Light" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="COLOR">
+                          <simpleValue value="'BLUE'" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                  </variable>
+                  <variable name="YellowLight">
+                    <type>
+                      <derived name="ST_Light" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="COLOR">
+                          <simpleValue value="'YELLOW'" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                  </variable>
+                  <variable name="GBY_LightSystem">
+                    <type>
+                      <derived name="ST_LightSystem" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="LIGHT1">
+                          <simpleValue value="GreenLight" />
+                        </value>
+                        <value member="LIGHT2">
+                          <simpleValue value="BlueLight" />
+                        </value>
+                        <value member="LIGHT3">
+                          <simpleValue value="YellowLight" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                  </variable>
+                  <variable name="GreenToggle">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="BlueToggle">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="YellowToggle">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="bExecuteLight">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="stMotor">
+                    <type>
+                      <derived name="ST_Motor" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> relating to motor system</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="MotorToggle">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="FALSE" />
+                    </initialValue>
+                  </variable>
+                  <variable name="bExecuteMotor">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="FALSE" />
+                    </initialValue>
+                  </variable>
+                  <variable name="fbMotor">
+                    <type>
+                      <derived name="MotorProps" />
+                    </type>
+                  </variable>
+                  <variable name="CurrentStateFileNameMotor">
+                    <type>
+                      <derived name="T_MaxString" />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="'CurrentSystem.xml'" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> writing xml files
+	CurrentStateFileNameMotor : T_MaxString := 'CurrentLightSystem.xml';
+	RealTimeStateOfMotor : ST_MotorSystem;
+	XmlSrvWriteSystemCurrentStateOfMotor : FB_XmlSrvWrite := (nMode := XMLSRV_ADDMISSING,
+														pSymAddr:=ADR(RealTimeStateOfMotor),
+														cbSymSize := SIZEOF(RealTimeStateOfMotor),
+														sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameMotor),
+														sXPath := '/CURRENT_STATE/Motor');
+	CurrentStateFileNameLight : T_MaxString := 'CurrentLightSystem.xml';
+	RealTimeStateOfLight : ST_LightSystem;
+	XmlSrvWriteSystemCurrentStateOfLight : FB_XmlSrvWrite := (nMode := XMLSRV_ADDMISSING,
+														pSymAddr:=ADR(RealTimeStateOfLight),
+														cbSymSize := SIZEOF(RealTimeStateOfLight),
+														sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameLight),
+														sXPath := '/CURRENT_STATE/Lights');</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="RealTimeStateOfSystem">
+                    <type>
+                      <derived name="ST_CompleteSystemState" />
+                    </type>
+                  </variable>
+                  <variable name="XmlSrvWriteSystemCurrentStateOfSystem">
+                    <type>
+                      <derived name="FB_XmlSrvWrite" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="nMode">
+                          <simpleValue value="XMLSRV_ADDMISSING" />
+                        </value>
+                        <value member="pSymAddr">
+                          <simpleValue value="ADR(RealTimeStateOfSystem)" />
+                        </value>
+                        <value member="cbSymSize">
+                          <simpleValue value="SIZEOF(RealTimeStateOfSystem)" />
+                        </value>
+                        <value member="sFilePath">
+                          <simpleValue value="CONCAT(STR1 := GVL.BasePath, STR2 := CurrentStateFileNameMotor)" />
+                        </value>
+                        <value member="sXPath">
+                          <simpleValue value="'/CURRENT_STATE'" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                  </variable>
+                  <variable name="CurrentStateFileNameLightHistory">
+                    <type>
+                      <derived name="T_MaxString" />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="'LightHistory.xml'" />
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> write logs</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="RealTimeLightSystemHistory">
+                    <type>
+                      <derived name="ST_LightSystemWithHistory" />
+                    </type>
+                  </variable>
+                  <variable name="XmlSrvWriteSystemCurrentStateOfLightAndHistory">
+                    <type>
+                      <derived name="FB_XmlSrvWrite" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="nMode">
+                          <simpleValue value="XMLSRV_ADDMISSING" />
+                        </value>
+                        <value member="pSymAddr">
+                          <simpleValue value="ADR(RealTimeLightSystemHistory)" />
+                        </value>
+                        <value member="cbSymSize">
+                          <simpleValue value="SIZEOF(RealTimeStateOfSystem.Lights)" />
+                        </value>
+                        <value member="sFilePath">
+                          <simpleValue value="CONCAT(STR1 := GVL.BasePath, STR2 := CurrentStateFileNameLightHistory)" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">	RealTimeLightSystemHistory : ST_LightSystemWithHistory := (LightSystem.LIGHT1 := GreenLight,
+																LightSystem.LIGHT2 := BlueLight,
+																LightSystem.LIGHT3 := YellowLight);		</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="iStateIndex">
+                    <type>
+                      <UDINT />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="0" />
+                    </initialValue>
+                  </variable>
+                  <variable name="ReadStateOfSystem">
+                    <type>
+                      <derived name="ST_CompleteSystemState" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml"> read xml files
+ read xml file from 'CurrentSystemState.xml'</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="XmlSrvReadCurrentSystemStateOfSystem">
+                    <type>
+                      <derived name="FB_XmlSrvRead" />
+                    </type>
+                    <initialValue>
+                      <structValue>
+                        <value member="pSymAddr">
+                          <simpleValue value="ADR(ReadStateOfSystem)" />
+                        </value>
+                        <value member="cbSymSize">
+                          <simpleValue value="SIZEOF(ReadStateOfSystem)" />
+                        </value>
+                        <value member="sFilePath">
+                          <simpleValue value="CONCAT(STR1 := GVL.BasePath, STR2 := CurrentStateFileNameMotor)" />
+                        </value>
+                        <value member="sXPath">
+                          <simpleValue value="'/CURRENT_STATE'" />
+                        </value>
+                      </structValue>
+                    </initialValue>
+                  </variable>
+                  <variable name="Timer3Sec">
+                    <type>
+                      <derived name="TON" />
+                    </type>
+                    <documentation>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">	ReadStateOfMotor : ST_Motor;
+	XmlSrvReadCurrentSystemStateMotor : FB_XmlSrvRead := (pSymAddr := ADR(ReadStateOfMotor),
+											cbSymSize := SIZEOF(ReadStateOfMotor),
+											sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameMotor),
+											sXPath := '/CURRENT_STATE/Motor');</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="Pulse">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="FALSE" />
+                    </initialValue>
+                  </variable>
+                  <variable name="oldState">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="FALSE" />
+                    </initialValue>
+                  </variable>
+                  <variable name="MotorStateChanged">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="FALSE" />
+                    </initialValue>
+                  </variable>
+                  <variable name="tempVar">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">Timer3Sec(IN := TRUE, PT := T#1500MS);
+IF Timer3Sec.Q THEN
+    Pulse := TRUE;
+    Timer3Sec(IN := FALSE);
+ELSE
+    Pulse := FALSE;
+END_IF;
+
+IF GreenToggle THEN
+	GreenLight.STATE := NOT GreenLight.STATE;
+	GBY_LightSystem.LIGHT1:=GreenLight;
+	RealTimeLightSystemHistory.LightSystem.LIGHT1.LAST_TRIGGERED := GetTimeAsString();
+	bExecuteLight := TRUE;
+END_IF
+IF BlueToggle THEN
+	BlueLight.STATE := NOT BlueLight.STATE;
+	GBY_LightSystem.LIGHT2:=BlueLight;
+	RealTimeLightSystemHistory.LightSystem.LIGHT2.LAST_TRIGGERED := GetTimeAsString();
+	bExecuteLight := TRUE;
+END_IF
+IF YellowToggle THEN
+	YellowLight.STATE := NOT YellowLight.STATE;
+	GBY_LightSystem.LIGHT3:=YellowLight;
+	RealTimeLightSystemHistory.LightSystem.LIGHT3.LAST_TRIGGERED := GetTimeAsString();
+	bExecuteLight := TRUE;
+END_IF
+
+fbMotor(Motor := stMotor, MotorSpeed := ReadStateOfSystem.Motor.SPEED);
+IF oldState &lt;&gt; MotorToggle THEN
+	MotorStateChanged := TRUE;
+END_IF
+IF MotorStateChanged THEN
+	stMotor.STATE := NOT stMotor.STATE;
+	bExecuteMotor := TRUE;
+END_IF
+oldState := MotorToggle;
+
+// update system state variable
+RealTimeStateOfSystem.Lights := GBY_LightSystem;
+RealTimeStateOfSystem.Motor := stMotor;
+
+// write xml files
+IF (bExecuteLight OR bExecuteMotor) AND NOT XmlSrvWriteSystemCurrentStateOfSystem.bBusy THEN
+	XmlSrvWriteSystemCurrentStateOfSystem(pSymAddr := ADR(RealTimeStateOfSystem), bExecute := TRUE);
+ELSE
+	XmlSrvWriteSystemCurrentStateOfSystem(pSymAddr := ADR(RealTimeStateOfSystem), bExecute := FALSE);
+END_IF
+
+IF (bExecuteLight) AND NOT XmlSrvWriteSystemCurrentStateOfLightAndHistory.bBusy THEN
+	XmlSrvWriteSystemCurrentStateOfLightAndHistory(sXPath := CONCAT('/STATE_LOG/STATE_', 
+																	UDINT_TO_STRING(iStateIndex) ),
+												pSymAddr := ADR(RealTimeLightSystemHistory), 
+												bExecute := TRUE);
+	iStateIndex := iStateIndex + 1;
+ELSE
+	XmlSrvWriteSystemCurrentStateOfLightAndHistory(sXPath := CONCAT('/STATE_LOG/STATE_', 
+																	UDINT_TO_STRING(iStateIndex) ),
+												pSymAddr := ADR(RealTimeLightSystemHistory), 
+												bExecute := FALSE);
+END_IF
+
+// read xml files
+IF NOT XmlSrvReadCurrentSystemStateOfSystem.bBusy AND NOT XmlSrvWriteSystemCurrentStateOfSystem.bBusy AND Pulse THEN
+	XmlSrvReadCurrentSystemStateOfSystem(bExecute := TRUE);
+ELSIF XmlSrvReadCurrentSystemStateOfSystem.bBusy THEN
+	XmlSrvReadCurrentSystemStateOfSystem(bExecute := FALSE);
+END_IF
+
+// check if xml files are updated
+IF CheckIfUpdatedLight(RealTimeStateOfSystem.Lights, ReadStateOfSystem.Lights) AND Pulse THEN
+	GBY_LightSystem := ReadStateOfSystem.Lights;
+END_IF
+IF CheckIfUpdatedMotor(RealTimeStateOfSystem.Motor, ReadStateOfSystem.Motor) AND Pulse THEN
+	stMotor.SPEED := ReadStateOfSystem.Motor.SPEED;
+	stMotor.STATE := ReadStateOfSystem.Motor.STATE;
+	IF ReadStateOfSystem.Motor.STATE = FALSE THEN
+		stMotor.SPEED := 0;
+	END_IF
+END_IF
+
+GreenToggle := FALSE;
+BlueToggle := FALSE;
+YellowToggle := FALSE;
+bExecuteLight := FALSE;
+bExecuteMotor := FALSE;
+MotorStateChanged := FALSE;
+//tempVar := FALSE;</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">PROGRAM MAIN
+VAR
+	// relating to light system
+	GreenLight : ST_Light := (COLOR := 'GREEN');
+	BlueLight : ST_Light := (COLOR := 'BLUE');
+	YellowLight : ST_Light := (COLOR := 'YELLOW');
+	GBY_LightSystem : ST_LightSystem := (LIGHT1:= GreenLight, 
+										LIGHT2 := BlueLight,
+										LIGHT3 := YellowLight);
+	GreenToggle : BOOL;
+	BlueToggle : BOOL;
+	YellowToggle : BOOL;
+	bExecuteLight : BOOL;
+										
+	// relating to motor system
+	stMotor : ST_Motor;
+	MotorToggle : BOOL := FALSE;
+	bExecuteMotor : BOOL := FALSE;
+	fbMotor : MotorProps;
+	
+	// writing xml files
+//	CurrentStateFileNameMotor : T_MaxString := 'CurrentLightSystem.xml';
+//	RealTimeStateOfMotor : ST_MotorSystem;
+//	XmlSrvWriteSystemCurrentStateOfMotor : FB_XmlSrvWrite := (nMode := XMLSRV_ADDMISSING,
+//														pSymAddr:=ADR(RealTimeStateOfMotor),
+//														cbSymSize := SIZEOF(RealTimeStateOfMotor),
+//														sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameMotor),
+//														sXPath := '/CURRENT_STATE/Motor');
+														
+//	CurrentStateFileNameLight : T_MaxString := 'CurrentLightSystem.xml';
+//	RealTimeStateOfLight : ST_LightSystem;
+//	XmlSrvWriteSystemCurrentStateOfLight : FB_XmlSrvWrite := (nMode := XMLSRV_ADDMISSING,
+//														pSymAddr:=ADR(RealTimeStateOfLight),
+//														cbSymSize := SIZEOF(RealTimeStateOfLight),
+//														sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameLight),
+//														sXPath := '/CURRENT_STATE/Lights');
+	CurrentStateFileNameMotor : T_MaxString := 'CurrentSystem.xml';
+	RealTimeStateOfSystem : ST_CompleteSystemState;
+	XmlSrvWriteSystemCurrentStateOfSystem : FB_XmlSrvWrite := (nMode := XMLSRV_ADDMISSING,
+														pSymAddr:=ADR(RealTimeStateOfSystem),
+														cbSymSize := SIZEOF(RealTimeStateOfSystem),
+														sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameMotor),
+														sXPath := '/CURRENT_STATE');
+
+	// write logs
+	CurrentStateFileNameLightHistory : T_MaxString := 'LightHistory.xml';
+	RealTimeLightSystemHistory : ST_LightSystemWithHistory;
+//	RealTimeLightSystemHistory : ST_LightSystemWithHistory := (LightSystem.LIGHT1 := GreenLight,
+//																LightSystem.LIGHT2 := BlueLight,
+//																LightSystem.LIGHT3 := YellowLight);		
+	XmlSrvWriteSystemCurrentStateOfLightAndHistory : FB_XmlSrvWrite := (nMode := XMLSRV_ADDMISSING,
+														pSymAddr:=ADR(RealTimeLightSystemHistory),
+														cbSymSize := SIZEOF(RealTimeStateOfSystem.Lights),
+														sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameLightHistory));										
+	iStateIndex : UDINT := 0;
+	
+	// read xml files
+	// read xml file from 'CurrentSystemState.xml'
+	ReadStateOfSystem : ST_CompleteSystemState;
+	XmlSrvReadCurrentSystemStateOfSystem : FB_XmlSrvRead := (pSymAddr := ADR(ReadStateOfSystem),
+											cbSymSize := SIZEOF(ReadStateOfSystem),
+											sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameMotor),
+											sXPath := '/CURRENT_STATE');
+											
+//	ReadStateOfMotor : ST_Motor;
+//	XmlSrvReadCurrentSystemStateMotor : FB_XmlSrvRead := (pSymAddr := ADR(ReadStateOfMotor),
+//											cbSymSize := SIZEOF(ReadStateOfMotor),
+//											sFilePath := CONCAT(STR1:=GVL.BasePath, STR2:=CurrentStateFileNameMotor),
+//											sXPath := '/CURRENT_STATE/Motor');
+											
+											
+    Timer3Sec : TON;
+    Pulse : BOOL := FALSE;
+	
+	oldState: BOOL := FALSE;
+	MotorStateChanged : BOOL := FALSE;
+	
+	tempVar : BOOL;
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>fc989858-2aaf-460a-93a6-b2049f743db0</ObjectId>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+            <Libraries>
+              <Library Name="#System_VisuElemMeter" Namespace="VisuElemMeter" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemMeter, 3.5.13.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElems" Namespace="VisuElems" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElems, 3.5.13.40 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsSpecialControls" Namespace="VisuElemsSpecialControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsSpecialControls, 3.5.13.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemsWinControls" Namespace="VisuElemsWinControls" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemsWinControls, 3.5.13.20 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuElemTextEditor" Namespace="VisuElemTextEditor" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuElemTextEditor, 3.5.13.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#system_visuinputs" Namespace="visuinputs" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="visuinputs, 3.5.13.0 (system)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#System_VisuNativeControl" Namespace="VisuNativeControl" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="VisuNativeControl, 3.5.13.0 (System)" ResolverGuid="2717eb6a-dd07-4c66-8d8d-cacebd7b18ae" />
+              <Library Name="#Tc2_Standard" Namespace="Tc2_Standard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Tc2_Standard, * (Beckhoff Automation GmbH)" />
+              <Library Name="#Tc2_System" Namespace="Tc2_System" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Tc2_System, * (Beckhoff Automation GmbH)">
+                <Parameters>
+                  <Parameter Name="PARAM.TABLE_UPPER_BOUND" Value="15" />
+                  <Parameter Name="PARAM.STRING_LENGTH_EXP" Value="255" />
+                  <Parameter Name="PARAM.STRING_LENGTH_ADDRESS" Value="20" />
+                  <Parameter Name="PARAM.STRING_LENGTH_COMMENT" Value="255" />
+                  <Parameter Name="PARAM.STRING_LENGTH_OUTSTRING" Value="255" />
+                  <Parameter Name="PARAM.TABLE_SHOW_VALID_ITEMS" Value="FALSE" />
+                </Parameters>
+              </Library>
+              <Library Name="#Tc2_Utilities" Namespace="Tc2_Utilities" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Tc2_Utilities, * (Beckhoff Automation GmbH)">
+                <Parameters>
+                  <Parameter Name="PARAMETERLIST.NMAXLICENSES" Value="50" />
+                  <Parameter Name="PARAMETERLIST.NMAXLICENSEDEVICES" Value="16" />
+                  <Parameter Name="PARAMETERLIST.NMAXCPUCOUNT" Value="64" />
+                  <Parameter Name="PARAMETERLIST.CMAXCHARACTERS" Value="16#FFFFFFF0" />
+                  <Parameter Name="PARAMETERLIST.NMAXFILESONDONGLE" Value="20" />
+                  <Parameter Name="PARAMETERLIST.CMAXCSVFIELDVALUESIZE" Value="255" />
+                </Parameters>
+              </Library>
+              <Library Name="#Tc2_XmlDataSrv" Namespace="Tc2_XmlDataSrv" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Tc2_XmlDataSrv, * (Beckhoff Automation GmbH)" />
+              <Library Name="#Tc3_Module" Namespace="Tc3_Module" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" DefaultResolution="Tc3_Module, * (Beckhoff Automation GmbH)" />
+              <Library Name="VisuSymbols, 3.5.10.0 (System)" Namespace="VisuSymbols" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="false" LinkAllContent="false" />
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+                  <ObjectId>9cd3bf54-0926-4b31-af3a-7ae2ae7655f1</ObjectId>
+                </data>
+              </addData>
+            </Libraries>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>85cbfc8c-b56d-46e3-9cbb-0fda014ba2c3</ObjectId>
+          </data>
+        </addData>
+      </resource>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Object Name="Plc1" ObjectId="85cbfc8c-b56d-46e3-9cbb-0fda014ba2c3">
+          <Object Name="Library Manager" ObjectId="9cd3bf54-0926-4b31-af3a-7ae2ae7655f1" />
+          <Folder Name="DUTs">
+            <Object Name="CheckIfUpdatedLight" ObjectId="fcf6c1d1-82cf-4921-bdb7-3e779c74c774" />
+            <Object Name="GetTimeAsString" ObjectId="c1be1ebc-3654-47c2-bbb9-731d52d95568" />
+            <Object Name="MotorProps" ObjectId="a0cb5ae4-77ff-4a2d-8536-75f8ff7fee69" />
+            <Object Name="CheckIfUpdatedMotor" ObjectId="d04add17-43d9-4f60-8481-a0d4e714746e" />
+            <Object Name="ST_CompleteSystemState" ObjectId="8aacdab3-afed-48a0-a7bb-88b3dc21ecfc" />
+            <Object Name="ST_Light" ObjectId="03f00174-c7a3-4177-ba22-0ca78f05c613" />
+            <Object Name="ST_LightSystem" ObjectId="ca50e7f5-6ede-4c3f-bdbc-039309a6121c" />
+            <Object Name="ST_LightSystemWithHistory" ObjectId="7976655c-3823-41f0-869c-54f133cd90e9" />
+            <Object Name="ST_Motor" ObjectId="06ddf205-147f-41e9-a701-16bcf0928d9a" />
+          </Folder>
+          <Folder Name="GVLs">
+            <Object Name="GVL" ObjectId="e9d1d484-4b44-4b75-b152-c262db173cb9" />
+          </Folder>
+          <Object Name="PlcTask" ObjectId="525dc629-7830-4319-bef6-2423b8c4ed74" />
+          <Folder Name="POUs">
+            <Object Name="MAIN" ObjectId="fc989858-2aaf-460a-93a6-b2049f743db0" />
+          </Folder>
+        </Object>
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>

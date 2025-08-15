@@ -1,0 +1,17 @@
+{
+    "type": "function",
+    "name": "get_node_value",
+    "description": "Retrieve the value of a node from the connected OPC UA server. This function fetches the node corresponding to the given NodeId from the provided OPC UA client and returns its current value.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "NodeId": {
+                "type": "string",
+                "description": "The NodeId of the target node in the OPC UA server address space."
+            }
+        },
+        "required": ["NodeId"],
+        "additionalProperties": false
+    },
+    "strict": true
+}

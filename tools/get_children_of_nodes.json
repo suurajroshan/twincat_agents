@@ -1,0 +1,17 @@
+{
+    "type": "function",
+    "name": "get_children_of_nodes",
+    "description": "Retrieve and list the immediate child nodes of a given OPC UA node.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "NodeId": {
+                "type": "string",
+                "description": "The NodeId of the parent OPC UA node to browse. This can be in string format such as 'ns=4;s=MAIN'."
+            }
+        },
+        "required": ["NodeId"],
+        "additionalProperties": false
+    },
+    "strict": true
+}
