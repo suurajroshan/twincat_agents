@@ -142,38 +142,42 @@ if __name__ =="__main__":
         UA_client.connect()
         print("✅ Connected to OPC UA Server!")
 
-        a = get_node_value("ns=4;s=MAIN.GreenToggle")
-        import json
-        args = json.loads('{"NodeId":"ns=4;s=MAIN.BlueToggle","value":true}')
-        b = write_value_to_node(**args)
-        print(b)
+        # print(write_value_to_node("ns=4;s=GVL.defaultSpeed", 1000.))
+        # print(write_value_to_node("ns=4;s=MAIN.MotorToggle", True))
+
+
+        # a = get_node_value("ns=4;s=MAIN.GreenToggle")
+        # import json
+        # args = json.loads('{"NodeId":"ns=4;s=MAIN.BlueToggle","value":true}')
+        # b = write_value_to_node(**args)
+        # print(b)
         # a = UA_client.get_node("ns=1;s=PLC1")
         # for aa in a.get_children():
         #     print(aa, aa.get_browse_name())
 
     #    # Access variable nodes
-    #     green_toggle = UA_client.get_node("ns=4;s=MAIN.GreenToggle")
+        # green_toggle = UA_client.get_node("ns=4;s=MAIN.MotorToggle")
     #     blue_toggle = UA_client.get_node("ns=4;s=MAIN.BlueToggle")
     #     yellow_toggle = UA_client.get_node("ns=4;s=MAIN.YellowToggle")
     #     motor_toggle = UA_client.get_node("ns=4;s=MAIN.MotorToggle")
 
     #     # ✅ READ values
     #     print("🔎 Reading values:")
-    #     print("GreenToggle:", green_toggle.get_value())
+        # print("GreenToggle:", green_toggle.get_value())
     #     print("BlueToggle:", blue_toggle.get_value())
     #     print("YellowToggle:", yellow_toggle.get_value())
     #     print("MotorToggle:", motor_toggle.get_value())
 
-    #     # trueVariant = ua.Variant(1) # , ua.VariantType.Boolean)
+        # trueVariant = ua.Variant(True , ua.VariantType.Boolean)
     #     # green_toggle.set_attribute(ua.AttributeIds.Value, ua.DataValue(trueVariant))
 
     #     # ✅ WRITE values
     #     # print("✏️ Writing values:")
-    #     # green_toggle.set_value(ua.DataValue(ua.Variant(True, ua.VariantType.Boolean)))   # Turn ON
+        # green_toggle.set_value(ua.DataValue(ua.Variant(True, ua.VariantType.Boolean)))   # Turn ON
     #     # blue_toggle.set_value(ua.DataValue(ua.Variant(False, ua.VariantType.Boolean)))  # Turn OFF
 
     #     print("✅ Updated values:")
-    #     print("GreenToggle (new):", green_toggle.get_value())
+        # print("GreenToggle (new):", green_toggle.get_value())
     # #     print("BlueToggle (new):", blue_toggle.get_value())
 
     # except Exception as e:

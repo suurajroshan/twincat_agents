@@ -4,7 +4,7 @@ from client import connect_to_twincat_server, disconnect_client
 
 from openai import OpenAI
 
-import tools
+from tools import tool_list
 from utils import call_function
 
 # TwinCAT code to pass as context
@@ -14,21 +14,16 @@ with open(codePath, 'r' , encoding='utf-8') as codeFile:
 projectCode = BeautifulSoup(codeFileData, 'xml')
 
 # API Keys
-with open('C:\\Users\\Suuraj\\.config\\keys_openai', 'r') as k:
+with open('secret_key', 'r') as k:
     key = k.read()
 
 # System Prompt
-with open('systemAgentPrompt.txt', 'r') as sp:
+with open('system_agent_prompt.txt', 'r') as sp:
     SYSTEM_PROMPT = sp.read()
 SYSTEM_PROMPT += str(projectCode)
 
-# tools with their JSON blobs
-tool_list = [
-    tools.get_root_object_node,
-    tools.get_children_of_nodes,
-    tools.get_node_value,
-    tools.write_value_to_node,
-]
+with open('helper_agent_prompt.txt', 'r') as hp:
+    HELPER_PROMPT = hp.read()
 
 client = OpenAI(api_key=key)
 
@@ -39,7 +34,7 @@ messages = [
     },
     {
         "role": "user",
-        "content": "Turn off blue light"
+        "content": "The variable `GreenLight` is it both readable and writable?"
     }
 ]
 
@@ -57,6 +52,7 @@ try:
         for event in response:
             if event[0] == 'tools':
                 continue
+            print(event)
 
         function_call = None
         function_call_arguments = None
@@ -71,6 +67,7 @@ try:
                 args = json.loads(tool_call.arguments)
 
                 result = call_function(name, args)
+                print('Result: ', result)
                 messages.append({
                     "type": "function_call_output",
                     "call_id": tool_call.call_id,
