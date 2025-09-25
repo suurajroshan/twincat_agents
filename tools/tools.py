@@ -13,3 +13,10 @@ with open('tools/get_node_value.json', 'r') as f:
 
 with open('tools/write_value_to_node.json', 'r') as f:
     write_value_to_node = json.loads(f.read())
+
+tool_list = [
+    get_root_object_node,
+    get_children_of_nodes,
+    get_node_value,
+    write_value_to_node,
+]

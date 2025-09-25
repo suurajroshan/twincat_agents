@@ -1,0 +1,226 @@
+ ### Compiled Context Document (CCD)
+- Workflow:
+  - Initialize
+    - Discover the PLC program instance node: Plc1.MAIN (program) and Plc1.GVL (global vars).
+    - Build a symbol map of all control inputs, parameters, status values, and service flags listed under “Nodes and Meanings”.
+    - Cache last known values needed for edge-triggered operations (e.g., MAIN.MotorToggle).
+  - Thought → Action → Observation loop
+    - Thought: Parse user intent into target variables and operations (toggle vs. set).
+    - Action: Execute a sequence composed of Browse, Read, Write, Wait actions (see Output Structure).
+    - Observation: Read back the relevant status nodes to verify desired effect. 
+    - If verification fails: retry with bounded attempts; report precise error if still failing.
+  - General procedure for any command
+    - Browse/resolve nodes (never guess exact node IDs; use program and variable 
+names).
+    - Read current state(s) needed to confirm and to avoid unintended toggles.   
+    - Write only the minimal necessary variables.
+    - Wait appropriately:
+      - For toggle-based actions: 10–100 ms (1–10 PLC cycles) before verification.
+      - For XML-driven synchronizations (Pulse based): 1.6–2.0 s before verification.
+    - Verify by reading real-time state nodes (prefer MAIN.GBY_LightSystem and MAIN.stMotor).
+    - If mismatch persists:
+      - Re-evaluate assumptions (e.g., MotorToggle edge needed, or motor OFF clamps speed to 0).
+      - Retry once; then return explicit failure with diagnostics.
+
+- Constraints:
+  - Node discovery and addressing
+    - Do not hardcode or guess node IDs or paths.
+    - Browse for program “Plc1/Master/MAIN” (exposed as Plc1.MAIN in symbol servers) and “Plc1.GVL”.
+    - Only read/write instance variables; do not modify data type definitions.   
+  - Safety and correctness
+    - Confirm current state before issuing toggle-based writes to avoid double-toggles.
+    - For MAIN.MotorToggle: it is edge-detected. You must flip the boolean value 
+each time you want a toggle event.
+    - Do not spam writes; avoid rapid repeated writes within the same cycle (10 ms task). Insert small waits (≥10 ms).
+    - Validate every write by reading back the authoritative runtime state after 
+an appropriate delay.
+    - Be aware of the XML read/write background services:
+      - Writes to ReadStateOfSystem.* may be overwritten by the periodic XML read (every ~1.5 s on pulse).
+      - Real-time runtime state is represented by MAIN.GBY_LightSystem and MAIN.stMotor. Use these for verification.
+      - History (LAST_TRIGGERED) and logging are only updated when using the light toggles, not when directly writing ReadStateOfSystem.Lights.
+    - Avoid concurrent conflicting operations:
+      - Do not rely on XML service flags to gate your writes; they are internal to FB calls in PLC.
+      - Prefer toggle inputs and ReadStateOfSystem parameters as defined below; do not attempt to control FB bExecute flags.
+    - Bounds/assumptions:
+      - Motor speed is REAL; no explicit bounds provided in code. If unsure, confirm acceptable range with user; otherwise write as requested and verify applied runtime speed.
+      - Light states are BOOL; colors are fixed strings initialized in code.     
+  - Timing
+    - PLC task cycle: ~10 ms (Interval=10000 us).
+    - Pulse (MAIN.Pulse) is driven by TON with PT=1500 ms. Actions dependent on CheckIfUpdated* functions (XML sync) become effective on or after the next pulse. 
+  - Idempotency
+    - For “set to ON/OFF” requests, only toggle when the current state differs from the target.
+    - For setting speed, if target equals current, do not write.
+
+- Nodes and Meanings:
+  - Control inputs (write these to command changes)
+    - MAIN.GreenToggle, MAIN.BlueToggle, MAIN.YellowToggle (BOOL)
+      - Set TRUE once to toggle the respective light. PLC resets these to FALSE at the end of the cycle.
+    - MAIN.MotorToggle (BOOL)
+      - Must change value (edge) to trigger a motor state toggle. PLC does not auto-reset this. Maintain and flip value each time you want to toggle.
+    - MAIN.ReadStateOfSystem.Motor.SPEED (REAL)
+      - Target motor speed. Used continuously by fbMotor when motor is ON.       
+    - MAIN.ReadStateOfSystem.Motor.STATE (BOOL)
+      - If different from runtime state, PLC will adopt this state on the next pulse (~1.5 s) via CheckIfUpdatedMotor.
+    - Optional (XML-driven light state set): MAIN.ReadStateOfSystem.Lights.LIGHT#.STATE (BOOL)
+      - If different, PLC will adopt on next pulse; no history entry will be written.
+  - Real-time status (read these to verify)
+    - MAIN.GBY_LightSystem.LIGHT1.STATE (BOOL) – Green
+    - MAIN.GBY_LightSystem.LIGHT2.STATE (BOOL) – Blue
+    - MAIN.GBY_LightSystem.LIGHT3.STATE (BOOL) – Yellow
+    - MAIN.stMotor.STATE (BOOL)
+    - MAIN.stMotor.SPEED (REAL)
+    - MAIN.RealTimeLightSystemHistory.LightSystem.LIGHT#.LAST_TRIGGERED (STRING) 
+      - Updated only on toggle-based operations for lights.
+  - Service and timing (read-only; for diagnostics)
+    - MAIN.Pulse (BOOL): TRUE briefly every ~1.5 s when Timer3Sec.Q goes TRUE.   
+    - MAIN.XmlSrvWriteSystemCurrentStateOfSystem.bBusy (BOOL)
+    - MAIN.XmlSrvReadCurrentSystemStateOfSystem.bBusy (BOOL)
+    - MAIN.Timer3Sec.Q (BOOL): internal timing; not required for normal control. 
+  - Global vars (read-only for context)
+    - GVL.BasePath (STRING): 'C:\Users\suura\Desktop\'
+    - GVL.defaultSpeed (REAL): 500
+
+- Behavior logic summary (from program MAIN):
+  - Light toggles:
+    - When a Toggle BOOL is TRUE:
+      - The corresponding ST_Light.STATE is inverted.
+      - The ST_Light object is copied into GBY_LightSystem.
+      - LAST_TRIGGERED timestamp is updated via GetTimeAsString.
+      - bExecuteLight := TRUE, which drives XML write and history write.
+    - Toggles are reset to FALSE at end of cycle.
+  - Motor logic:
+    - fbMotor sets stMotor.SPEED := ReadStateOfSystem.Motor.SPEED when stMotor.STATE=TRUE; else SPEED := 0.
+    - MotorToggle edge detection:
+      - If oldState <> MotorToggle then MotorStateChanged := TRUE; stMotor.STATE 
+:= NOT stMotor.STATE; bExecuteMotor := TRUE.
+      - oldState := MotorToggle at end of logic. MotorStateChanged reset FALSE at end of cycle.
+  - System read/write (XML):
+    - On any execute flag and not busy, writes RealTimeStateOfSystem (Lights+Motor) to CurrentSystem.xml at '/CURRENT_STATE'.
+    - On bExecuteLight, also appends a history entry to LightHistory.xml at '/STATE_LOG/STATE_<iStateIndex>' and increments iStateIndex.
+    - Every ~1.5 s Pulse: attempts to read CurrentSystem.xml into ReadStateOfSystem.
+    - On Pulse, if differences detected:
+      - Lights: GBY_LightSystem := ReadStateOfSystem.Lights.
+      - Motor: stMotor fields are updated from ReadStateOfSystem.Motor (if STATE=FALSE, SPEED:=0).
+
+- High-level intent → low-level actions:
+  - Turn light ON/OFF specifically
+    - Read MAIN.GBY_LightSystem.LIGHT#.STATE.
+    - If matches target: do nothing.
+    - Else: Write MAIN.<Color>Toggle := TRUE.
+    - Wait 10–100 ms; read back MAIN.GBY_LightSystem.LIGHT#.STATE to confirm.    
+  - Toggle a light (no specified target)
+    - Write MAIN.<Color>Toggle := TRUE.
+    - Wait 10–100 ms; read back state to confirm inversion from pre-read.        
+  - Turn motor ON/OFF via toggle (immediate)
+    - Read MAIN.stMotor.STATE.
+    - If matches target: do nothing.
+    - Else: Read MAIN.MotorToggle; write it inverted (MotorToggle := NOT current 
+MotorToggle).
+    - Wait 10–100 ms; read back MAIN.stMotor.STATE to confirm.
+  - Turn motor ON/OFF via XML sync (pulse-based)
+    - Write MAIN.ReadStateOfSystem.Motor.STATE := desired.
+    - Wait 1.6–2.0 s; read MAIN.stMotor.STATE to confirm.
+  - Set motor speed
+    - Write MAIN.ReadStateOfSystem.Motor.SPEED := desiredSpeed.
+    - If motor is ON: wait 10–100 ms; verify MAIN.stMotor.SPEED equals desiredSpeed (tolerance per float).
+    - If motor is OFF: MAIN.stMotor.SPEED remains 0; optionally inform user or offer to turn motor ON.
+  - Set all light states at once via XML sync (no history)
+    - Write MAIN.ReadStateOfSystem.Lights.LIGHT#.STATE to desired values.        
+    - Wait 1.6–2.0 s; verify MAIN.GBY_LightSystem.LIGHT#.STATE.
+    - Note: LAST_TRIGGERED and history will not update.
+
+- Output Structure:
+  - Response template
+    - Goal: <user intent>
+    - Plan:
+      - Steps: [Browse/Resolve], [Read current], [Write], [Wait], [Verify], [Retry-if-needed]
+      - Control method: toggle-based or XML-sync-based (stateful/pulse-driven)   
+    - Actions:
+      - - type: browse | read | write | wait
+        - node: <qualified path>
+        - value: <if write>
+        - reason: <why this step is needed>
+    - Observations:
+      - - node: <qualified path>
+        - value: <read value>
+        - ok: true|false
+        - note: <mismatch details if any>
+    - Result:
+      - success: true|false
+      - final_state:
+        - lights: {green: <bool>, blue: <bool>, yellow: <bool>}
+        - motor: {state: <bool>, speed: <real>}
+      - warnings: [list]
+      - errors: [list]
+  - Action encoding
+    - Browse: identify and cache symbol handle/path for target nodes.
+    - Read: single or batch read; return typed values.
+    - Write: single or batch write; confirm with immediate post-write read when applicable.
+    - Wait: duration_ms.
+
+- Example Scenarios:
+  - Example 1: Turn on Green light
+    - Read MAIN.GBY_LightSystem.LIGHT1.STATE.
+    - If FALSE: write MAIN.GreenToggle := TRUE; wait 50 ms; read back LIGHT1.STATE; expect TRUE.
+    - If TRUE already: no write; return success, “already on.”
+  - Example 2: Toggle Blue light regardless of state
+    - Read pre-state MAIN.GBY_LightSystem.LIGHT2.STATE.
+    - Write MAIN.BlueToggle := TRUE; wait 50 ms.
+    - Read back LIGHT2.STATE; expect inversion relative to pre-state.
+  - Example 3: Turn motor ON (using MotorToggle edge)
+    - Read MAIN.stMotor.STATE; if FALSE:
+      - Read MAIN.MotorToggle (mt).
+      - Write MAIN.MotorToggle := NOT mt.
+      - Wait 50 ms; verify MAIN.stMotor.STATE == TRUE.
+    - If already TRUE: do nothing.
+  - Example 4: Set motor speed to 750 while ON
+    - Read MAIN.stMotor.STATE; if FALSE, optionally ask to turn ON first.        
+    - Write MAIN.ReadStateOfSystem.Motor.SPEED := 750.0.
+    - Wait 50 ms; verify MAIN.stMotor.SPEED ≈ 750.0 (allow small float epsilon). 
+  - Example 5: Force all lights OFF via XML sync (no history)
+    - Write MAIN.ReadStateOfSystem.Lights.LIGHT1.STATE := FALSE, LIGHT2.STATE := 
+FALSE, LIGHT3.STATE := FALSE.
+    - Wait 1.6–2.0 s; verify MAIN.GBY_LightSystem.LIGHT#.STATE all FALSE.        
+  - Example 6: Turn motor OFF via XML sync
+    - Write MAIN.ReadStateOfSystem.Motor.STATE := FALSE.
+    - Wait 1.6–2.0 s; verify MAIN.stMotor.STATE == FALSE and MAIN.stMotor.SPEED == 0.0.
+  - Example 7: MotorToggle pitfall
+    - Writing the same value to MAIN.MotorToggle again will do nothing (no edge). Always flip the boolean value from its current value to create a toggle event.  
+  - Example 8: Avoid double-toggling a light
+    - Do not write MAIN.GreenToggle := TRUE multiple times in quick succession; PLC resets it to FALSE at end of each cycle. Always verify state before issuing another toggle.
+
+- Assumptions and Notes:
+  - Symbol access is available for Plc1.MAIN and Plc1.GVL through the runtime interface (ADS/OPC UA). If browsing reveals different qualified prefixes, adjust paths accordingly.
+  - The authoritative real-time states to verify operational outcomes are:       
+    - Lights: MAIN.GBY_LightSystem.LIGHT#.STATE
+    - Motor: MAIN.stMotor.STATE and MAIN.stMotor.SPEED
+  - XML files and paths (GVL.BasePath, file names) are informational; the executor should not manage files directly.
+  - Timer3Sec PT is 1500 ms (despite name). Pulse-driven updates happen about every 1.5 s.
+  - LAST_TRIGGERED timestamps for lights update only when using the toggle inputs.
+
+- Minimal symbol map (qualified names):
+  - Controls
+    - MAIN.GreenToggle, MAIN.BlueToggle, MAIN.YellowToggle (BOOL)
+    - MAIN.MotorToggle (BOOL)
+    - MAIN.ReadStateOfSystem.Motor.SPEED (REAL)
+    - MAIN.ReadStateOfSystem.Motor.STATE (BOOL)
+    - MAIN.ReadStateOfSystem.Lights.LIGHT1.STATE (BOOL)
+    - MAIN.ReadStateOfSystem.Lights.LIGHT2.STATE (BOOL)
+    - MAIN.ReadStateOfSystem.Lights.LIGHT3.STATE (BOOL)
+  - Status
+    - MAIN.GBY_LightSystem.LIGHT1.STATE (BOOL)
+    - MAIN.GBY_LightSystem.LIGHT2.STATE (BOOL)
+    - MAIN.GBY_LightSystem.LIGHT3.STATE (BOOL)
+    - MAIN.stMotor.STATE (BOOL)
+    - MAIN.stMotor.SPEED (REAL)
+    - MAIN.RealTimeLightSystemHistory.LightSystem.LIGHT1.LAST_TRIGGERED (STRING) 
+    - MAIN.RealTimeLightSystemHistory.LightSystem.LIGHT2.LAST_TRIGGERED (STRING) 
+    - MAIN.RealTimeLightSystemHistory.LightSystem.LIGHT3.LAST_TRIGGERED (STRING) 
+  - Diagnostics (read-only)
+    - MAIN.Pulse (BOOL)
+    - MAIN.XmlSrvWriteSystemCurrentStateOfSystem.bBusy (BOOL)
+    - MAIN.XmlSrvReadCurrentSystemStateOfSystem.bBusy (BOOL)
+    - MAIN.Timer3Sec.Q (BOOL)
+  - Context
+    - GVL.BasePath (STRING)
+    - GVL.defaultSpeed (REAL)
